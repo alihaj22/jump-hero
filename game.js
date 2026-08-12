@@ -31,13 +31,13 @@ function groundY() {
 // =====================================================
 
 const heroImage = new Image();
-heroImage.src = "/images/hero.png";
+heroImage.src = "images/hero.png";
 
 const background1 = new Image();
-background1.src = "/images/background.png";
+background1.src = "images/background.png";
 
 const background2 = new Image();
-background2.src = "/images/background1.png";
+background2.src = "images/background1.png";
 
 // =====================================================
 // AUDIO
