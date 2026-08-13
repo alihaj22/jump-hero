@@ -479,51 +479,58 @@ function isMobileDevice() {
 
 function getMobileButtons() {
 
-    const w = screenWidth();
-    const h = screenHeight();
+    const w = canvas.width;
+    const h = canvas.height;
 
-    const size =
-        Math.max(
-            55,
-            Math.min(
-                78,
-                h * 0.17
-            )
-        );
+    // حجم مناسب لشاشات الهاتف القصيرة بالعرض
+    const size = Math.max(
+        42,
+        Math.min(
+            64,
+            h * 0.14,
+            w * 0.085
+        )
+    );
+
+    const margin = Math.max(12, size * 0.22);
+    const gap = Math.max(8, size * 0.16);
+
+    // وضع الأزرار فوق أسفل الشاشة بقليل
+    const y = h - size - margin;
 
     return {
 
         left: {
-            x: 20,
-            y: h - size - 15,
+            x: margin,
+            y: y,
             width: size,
             height: size
         },
 
         right: {
-            x: 35 + size,
-            y: h - size - 15,
+            x: margin + size + gap,
+            y: y,
             width: size,
             height: size
         },
 
         dash: {
-            x: 50 + size * 2,
-            y: h - size - 15,
+            x: margin + (size + gap) * 2,
+            y: y,
             width: size,
             height: size
         },
 
         attack: {
-            x: w - size * 2 - 35,
-            y: h - size - 15,
+            x: w - margin - size * 2 - gap,
+            y: y,
             width: size,
             height: size
         },
 
         jump: {
-            x: w - size - 15,
-            y: h - size - 25,
+            x: w - margin - size,
+            y: y,
             width: size,
             height: size
         }
@@ -3262,41 +3269,59 @@ function drawPlayer() {
 
 function drawHUD() {
 
+    const w = canvas.width;
+    const h = canvas.height;
+
+    const compact =
+        isMobileDevice() ||
+        w < 900 ||
+        h < 600;
+
+    const margin = compact ? 8 : 15;
+
+    const hudHeight =
+        compact ? 48 : 68;
+
+    const hudWidth =
+        compact
+            ? w - margin * 2
+            : Math.min(
+                650,
+                w - margin * 2
+            );
+
+    // خلفية الشريط
     ctx.fillStyle =
         "rgba(0,0,0,0.67)";
 
     ctx.fillRect(
-        15,
-        15,
-        Math.min(
-            650,
-            screenWidth() -
-            30
-        ),
-        68
+        margin,
+        margin,
+        hudWidth,
+        hudHeight
     );
 
-    ctx.fillStyle =
-        "white";
+    ctx.fillStyle = "white";
 
-    const mobile =
-        screenWidth() <
-        700;
+    ctx.textBaseline = "middle";
+
+    const fontSize =
+        compact
+            ? Math.max(
+                12,
+                Math.min(
+                    18,
+                    w / 45
+                )
+            )
+            : 21;
 
     ctx.font =
-        `bold ${mobile
-            ? 15
-            : 21
-        }px Arial`;
+        `bold ${fontSize}px Arial`;
 
-    const y = 55;
-
-    ctx.fillText(
-        "Score: " +
-        score,
-        30,
-        y
-    );
+    const y =
+        margin +
+        hudHeight / 2;
 
     let heartsText = "";
 
@@ -3308,44 +3333,92 @@ function drawHUD() {
         heartsText += "❤️";
     }
 
-    ctx.fillText(
-        heartsText,
-        mobile
-            ? 110
-            : 160,
-        y
-    );
+    if (compact) {
 
-    ctx.fillText(
-        "Time: " +
-        levelTime,
-        mobile
-            ? 235
-            : 320,
-        y
-    );
-
-    ctx.fillText(
-        "World " +
-        currentWorld,
-        mobile
-            ? 335
-            : 455,
-        y
-    );
-
-    if (
-        player.dashCooldown <= 0
-    ) {
-
+        // SCORE
         ctx.fillText(
-            "💨",
-            mobile
-                ? 420
-                : 565,
+            "Score: " + score,
+            margin + 12,
             y
         );
+
+        // HEARTS
+        ctx.fillText(
+            heartsText,
+            margin +
+            hudWidth * 0.20,
+            y
+        );
+
+        // TIME
+        ctx.fillText(
+            "Time: " + levelTime,
+            margin +
+            hudWidth * 0.48,
+            y
+        );
+
+        // WORLD
+        ctx.fillText(
+            "World " + currentWorld,
+            margin +
+            hudWidth * 0.70,
+            y
+        );
+
+        // DASH READY
+        if (
+            player.dashCooldown <= 0
+        ) {
+
+            ctx.fillText(
+                "💨",
+                margin +
+                hudWidth * 0.90,
+                y
+            );
+        }
+
+    } else {
+
+        ctx.fillText(
+            "Score: " + score,
+            30,
+            y
+        );
+
+        ctx.fillText(
+            heartsText,
+            160,
+            y
+        );
+
+        ctx.fillText(
+            "Time: " + levelTime,
+            320,
+            y
+        );
+
+        ctx.fillText(
+            "World " + currentWorld,
+            455,
+            y
+        );
+
+        if (
+            player.dashCooldown <= 0
+        ) {
+
+            ctx.fillText(
+                "💨",
+                565,
+                y
+            );
+        }
     }
+
+    ctx.textBaseline =
+        "alphabetic";
 }
 
 // =====================================================
