@@ -6,26 +6,52 @@ const ctx = canvas.getContext("2d");
 // =====================================================
 
 function screenWidth() {
+    if (window.visualViewport) {
+        return Math.floor(window.visualViewport.width);
+    }
+
     return window.innerWidth;
 }
 
 function screenHeight() {
+    if (window.visualViewport) {
+        return Math.floor(window.visualViewport.height);
+    }
+
     return window.innerHeight;
 }
 
 function resizeCanvas() {
-    canvas.width = screenWidth();
-    canvas.height = screenHeight();
+    const w = screenWidth();
+    const h = screenHeight();
+
+    canvas.width = w;
+    canvas.height = h;
+
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
 }
 
 resizeCanvas();
 
 window.addEventListener("resize", resizeCanvas);
 
-function groundY() {
-    return screenHeight() - 90;
+window.addEventListener("orientationchange", function () {
+    setTimeout(resizeCanvas, 250);
+});
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener(
+        "resize",
+        resizeCanvas
+    );
 }
 
+function groundY() {
+    const mobile = isMobileDevice();
+
+    return screenHeight() - (mobile ? 70 : 90);
+}
 // =====================================================
 // IMAGES
 // =====================================================
