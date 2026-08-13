@@ -615,7 +615,10 @@ canvas.addEventListener(
 function handleTouches(e) {
 
     e.preventDefault();
-
+if (gameOver) {
+    restartGame();
+    return;
+}
     if (!gameStarted) {
 
         if (e.touches.length > 0)
