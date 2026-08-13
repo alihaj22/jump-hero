@@ -3609,19 +3609,19 @@ function drawPause() {
     ctx.textAlign =
         "left";
 }
-
 function drawGameOver() {
 
     overlay();
 
-    ctx.textAlign =
-        "center";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
 
-    ctx.fillStyle =
-        "white";
+    // حجم مناسب للكمبيوتر والهاتف
+    const mobile = isMobileDevice();
 
-    ctx.font =
-        "bold 60px Arial";
+    ctx.font = mobile
+        ? "bold 38px Arial"
+        : "bold 60px Arial";
 
     ctx.fillText(
         "GAME OVER",
@@ -3629,17 +3629,19 @@ function drawGameOver() {
         screenHeight() / 2
     );
 
-    ctx.font =
-        "22px Arial";
+    ctx.font = mobile
+        ? "bold 18px Arial"
+        : "22px Arial";
 
     ctx.fillText(
-        "Press ENTER",
+        mobile
+            ? "Tap to Restart"
+            : "Press ENTER",
         screenWidth() / 2,
         screenHeight() / 2 + 50
     );
 
-    ctx.textAlign =
-        "left";
+    ctx.textAlign = "left";
 }
 
 function drawLevelComplete() {
